@@ -1,0 +1,78 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation=
+	"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	
+	<context:component-scan base-package="com.java">
+		<context:include-filter type="regex" expression=".example.*"/>
+		<context:include-filter type="regex" expression=".aop.*"/>
+		<context:exclude-filter type="regex" expression="org.springframework.aop.*"/>
+	</context:component-scan>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath:spring.properties</value>
+		</property>
+	</bean>
+
+	<bean class="com.java.example.DemoBeanPostProcessor"></bean>
+	
+	<bean class="com.java.example.DemoBeanFactoryPostProcessor"></bean>
+	
+	<bean  class="com.java.example.HelloWorld" name="helloBean">
+		<property name="name" value="Spring" />
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="abstractbean" class="com.java.example.AbstractBean" abstract="true"> 
+		<property name="name" value="India"/>
+	</bean> 
+	<bean id="patentbean"  parent="abstractbean">
+		<property name="type" value="10" />
+		<property name="action" value="run" /> 
+	</bean>
+	
+	<bean id="customer" class="com.java.example.CustomerService" init-method="init" destroy-method="destroy">
+		<property name="message" value="Customer Services"/>
+	</bean>
+	<bean id="customer1" class="com.java.example.CustomerService" init-method="init" destroy-method="destroy">
+		<property name="message" value="Customer Services"/>
+	</bean>
+	
+	<bean id="dataBean" class="com.java.example.DataBeanExample">
+		<property name="dataSource" ref="dataSource">
+		    <!--  <ref local=></ref>-->
+		</property>
+	</bean> 
+	
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="url" value="jdbc:sqlserver://bandbalabqa01\SQLEXPRESS:1433;databaseName=Machines" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+	</bean>
+	 <bean  class="com.java.aop.example.LoggingBeforeAspect" name="aspectBean"/>
+	 
+	<aop:config>
+		<aop:aspect id="aspectBean" ref="aspectBean" order="2">
+			<aop:pointcut expression="execution(* com.java.aop.*.*(..))" id="businessService"></aop:pointcut>
+			<aop:before method="add" pointcut-ref="businessService"></aop:before>
+			<aop:after method="substract" pointcut-ref="businessService"></aop:after>
+		</aop:aspect>	
+	</aop:config>
+	
+	<aop:config>
+		<aop:aspect id = "secondAspectBean" ref="customer" order="1">
+			<aop:pointcut expression = "execution(* com.java.*.*(..))" id = "secondService"></aop:pointcut>
+			<aop:before method="getMessage" pointcut-ref="secondService"></aop:before>
+			<aop:after method="getMessage" pointcut-ref="secondService"></aop:after>
+		</aop:aspect>
+	</aop:config>
+	
+</beans>

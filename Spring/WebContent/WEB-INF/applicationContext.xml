@@ -1,0 +1,37 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="helloBean" class="com.java.example.HelloWorld">
+		<property name="name" value="Spring" />
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="abstractbean" class="com.java.example.AbstractBean" abstract="true"> 
+		<property name="name" value="India"/>
+	</bean> 
+	<bean id="patentbean"  parent="abstractbean">
+		<property name="type" value="10" />
+		<property name="action" value="run" /> 
+	</bean>
+	
+	<bean id="customer" class="com.java.example.CustomerService" init-method="init" destroy-method="destroy">
+		<property name="message" value="Customer Services"/>
+	</bean>
+	
+	<bean id="dataBean" class="com.java.example.DataBeanExample">
+		<property name="dataSource" ref="dataSource"/>
+	</bean> 
+	
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="url" value="jdbc:sqlserver://bandbalabqa01\SQLEXPRESS:1433;databaseName=Machines" />
+		<property name="username" value="autolab" />
+		<property name="password" value="autolab" />
+	</bean>
+
+</beans>
+
